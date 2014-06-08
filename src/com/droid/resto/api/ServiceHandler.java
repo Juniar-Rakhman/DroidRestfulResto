@@ -24,10 +24,6 @@ public class ServiceHandler {
     public final static int POST = 2;
     static String response = null;
 
-//    public String makeServiceCall(DefaultHttpClient httpClient, String url, int method) {
-//        return this.makeServiceCall(httpClient, url, method, null);
-//    }
-
     /*
      * Making service call
      * @httpClient - we want to use 1 httpClient throughout the activity.

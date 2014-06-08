@@ -13,7 +13,7 @@ import com.droid.resto.R;
 public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //TODO: Add fragment_login/logout behaviour here (i.e if logged in show welcome instead of home)
+        //TODO: Add login/logout behaviour here (i.e if logged in show welcome instead of home)
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         return rootView;
     }

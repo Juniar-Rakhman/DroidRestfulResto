@@ -4,16 +4,13 @@ package com.droid.resto.fragment;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 import com.droid.resto.R;
 import com.droid.resto.adapter.MenuListAdapter;
 import com.droid.resto.api.ServiceHandler;
@@ -33,30 +30,9 @@ import java.util.HashMap;
 public class MenuFragment extends Fragment {
 	private static final String TAG = MenuFragment.class.getSimpleName();
 	private static final boolean DEBUG = true; // Set this to false to disable logs.
-
-	/**
-	 * Callback interface through which the fragment can report the task's
-	 * progress and results back to the Activity.
-	 */
-	public static interface TaskCallbacks {
-		void onPreExecute();
-
-		void onProgressUpdate(int percent);
-
-		void onCancelled();
-
-		void onPostExecute(String jsonStr);
-	}
-
 	private TaskCallbacks mCallbacks;
 	private FetchTask mTask;
 	private boolean mRunning;
-
-//	@Override
-//	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-//		View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
-//		return rootView;
-//	}
 
 	/**
 	 * Hold a reference to the parent Activity so we can report the task's current
@@ -89,9 +65,11 @@ public class MenuFragment extends Fragment {
 		//TODO: Add fragment_login/logout behaviour here (i.e if logged in show welcome instead of home)
 		View rootView = inflater.inflate(R.layout.fragment_menu, container, false);
 
-		mTask = new FetchTask(getActivity(), rootView);
-		mTask.execute();
-		mRunning = true;
+		if (!mRunning) {
+			mTask = new FetchTask(getActivity(), rootView);
+			mTask.execute();
+			mRunning = true;
+		}
 
 		return rootView;
 	}
@@ -109,11 +87,6 @@ public class MenuFragment extends Fragment {
 		cancel();
 	}
 
-//	public void start() {
-//		if (!mRunning) {
-//		}
-//	}
-
 	public void cancel() {
 		if (mRunning) {
 			mTask.cancel(false);
@@ -129,21 +102,62 @@ public class MenuFragment extends Fragment {
 		return mRunning;
 	}
 
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		if (DEBUG) Log.i(TAG, "onActivityCreated(Bundle)");
+		super.onActivityCreated(savedInstanceState);
+	}
+
+	@Override
+	public void onStart() {
+		if (DEBUG) Log.i(TAG, "onStart()");
+		super.onStart();
+	}
+
+	@Override
+	public void onResume() {
+		if (DEBUG) Log.i(TAG, "onResume()");
+		super.onResume();
+	}
+
+	@Override
+	public void onPause() {
+		if (DEBUG) Log.i(TAG, "onPause()");
+		super.onPause();
+	}
+
+	@Override
+	public void onStop() {
+		if (DEBUG) Log.i(TAG, "onStop()");
+		super.onStop();
+	}
+
+	/**
+	 * Callback interface through which the fragment can report the task's
+	 * progress and results back to the Activity.
+	 */
+	public static interface TaskCallbacks {
+		void onPreExecute();
+
+		void onProgressUpdate(int percent);
+
+		void onCancelled();
+
+		void onPostExecute(String jsonStr);
+	}
+
 	private class FetchTask extends AsyncTask<Void, Integer, Void> {
 
+		//TODO: Move these as settings.
+		private static final String fetch_url = "http://restfulresto.cloudcontrolled.com/api/menu";
+		private static final String login_url = "http://restfulresto.cloudcontrolled.com/";
 		DefaultHttpClient httpClient;
 		ServiceHandler sh;
 		ArrayList<NameValuePair> params;
 		String jsonStr;
-
 		ArrayList<HashMap<String, String>> foodList;
-
 		Context mContext;
 		View rootView;
-
-		//TODO: Move these as settings.
-		private static final String menu_url = "https://restfulresto.cloudcontrolled.com/api/menu";
-		private static final String login_url = "https://restfulresto.cloudcontrolled.com/";
 
 		public FetchTask(Context context, View rootView) {
 			this.mContext = context;
@@ -178,8 +192,8 @@ public class MenuFragment extends Fragment {
 			Log.d("Login Response: ", "> " + loginStr);
 
 			//TODO : Add loginStr check here. Make sure we have logged in.
-			//fetch menu
-			jsonStr = sh.makeServiceCall(httpClient, menu_url, ServiceHandler.GET, null);
+
+			jsonStr = sh.makeServiceCall(httpClient, fetch_url, ServiceHandler.GET, null);
 			Log.d("Get Response: ", "> " + jsonStr);
 
 			return null;
@@ -209,10 +223,10 @@ public class MenuFragment extends Fragment {
 				try {
 					JSONObject jsonObj = new JSONObject(jsonStr);
 					JSONObject menuObj = jsonObj.getJSONObject("data");
-					JSONArray foodArray = menuObj.getJSONArray("menu");
+					JSONArray menuArray = menuObj.getJSONArray("menu");
 
-					for (int i = 0; i < foodArray.length(); i++) {
-						JSONObject c = foodArray.getJSONObject(i);
+					for (int i = 0; i < menuArray.length(); i++) {
+						JSONObject c = menuArray.getJSONObject(i);
 						String nama = c.getString("nama");
 						String harga = c.getString("harga");
 
@@ -230,50 +244,19 @@ public class MenuFragment extends Fragment {
 
 			MenuListAdapter listAdapter = new MenuListAdapter(getActivity(), foodList);
 			ListView list = (ListView) rootView.findViewById(R.id.menu_list);
-			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-				@Override
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					// getting values from selected ListItem
+			//TODO : Add item click listener
+//			list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//				@Override
+//				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//					// getting values from selected ListItem
+//				}
+//			});
 
-
-				}
-			});
 			list.setAdapter(listAdapter);
-
 			mCallbacks.onPostExecute(jsonStr);
 			mRunning = false;
 		}
-	}
-
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		if (DEBUG) Log.i(TAG, "onActivityCreated(Bundle)");
-		super.onActivityCreated(savedInstanceState);
-	}
-
-	@Override
-	public void onStart() {
-		if (DEBUG) Log.i(TAG, "onStart()");
-		super.onStart();
-	}
-
-	@Override
-	public void onResume() {
-		if (DEBUG) Log.i(TAG, "onResume()");
-		super.onResume();
-	}
-
-	@Override
-	public void onPause() {
-		if (DEBUG) Log.i(TAG, "onPause()");
-		super.onPause();
-	}
-
-	@Override
-	public void onStop() {
-		if (DEBUG) Log.i(TAG, "onStop()");
-		super.onStop();
 	}
 
 }

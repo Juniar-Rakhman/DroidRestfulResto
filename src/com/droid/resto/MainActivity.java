@@ -16,17 +16,21 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.droid.resto.adapter.NavDrawerListAdapter;
-import com.droid.resto.fragment.TransFragment;
 import com.droid.resto.fragment.HomeFragment;
 import com.droid.resto.fragment.MenuFragment;
 import com.droid.resto.fragment.OrderFragment;
+import com.droid.resto.fragment.TransFragment;
 import com.droid.resto.model.NavDrawerItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class MainActivity extends FragmentActivity implements MenuFragment.TaskCallbacks {
+public class MainActivity extends FragmentActivity implements
+	MenuFragment.TaskCallbacks,
+	OrderFragment.TaskCallbacks,
+	TransFragment.TaskCallbacks {
+
 	private static final boolean DEBUG = true;
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private DrawerLayout mDrawerLayout;
@@ -219,10 +223,6 @@ public class MainActivity extends FragmentActivity implements MenuFragment.TaskC
 	public void onPostExecute(String jsonStr) {
 		if (DEBUG) Log.i(TAG, "onPostExecute()" + jsonStr);
 		if (pDialog.isShowing()) pDialog.dismiss();
-
-//		MenuListAdapter listAdapter = new MenuListAdapter(this, foodList);
-//		ListView list = (ListView) findViewById(R.id.menu_list);
-//		list.setAdapter(listAdapter);
 	}
 
 
