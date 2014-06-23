@@ -6,9 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -70,6 +68,13 @@ public class OrderFragment extends Fragment {
 		mRunning = true;
 
 		return rootView;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (DEBUG) Log.i(TAG, "onCreateOptionsMenu()");
+		getActivity().getMenuInflater().inflate(R.menu.order_add, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	/**

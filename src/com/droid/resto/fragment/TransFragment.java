@@ -147,9 +147,8 @@ public class TransFragment extends Fragment {
 
 	private class FetchTask extends AsyncTask<Void, Integer, Void> {
 
-		//TODO: Move these as settings. DO NOT USE HTTPS (NOT READY FOR THAT YET).
-		private static final String menu_url = "http://restfulresto.cloudcontrolled.com/api/transaksi";
-		private static final String login_url = "http://restfulresto.cloudcontrolled.com/";
+		String fetch_url;
+		String login_url;
 		DefaultHttpClient httpClient;
 		ServiceHandler sh;
 		ArrayList<NameValuePair> params;
@@ -163,6 +162,9 @@ public class TransFragment extends Fragment {
 		public FetchTask(Context context, View rootView) {
 			this.mContext = context;
 			this.rootView = rootView;
+
+			login_url = context.getResources().getString(R.string.remote_url);
+			fetch_url = context.getResources().getString(R.string.remote_url) + "api/transaksi";
 		}
 
 		@Override
@@ -193,7 +195,7 @@ public class TransFragment extends Fragment {
 
 			//TODO : Add loginStr check here. Make sure we have logged in.
 
-			jsonStr = sh.makeServiceCall(httpClient, menu_url, ServiceHandler.GET, null);
+			jsonStr = sh.makeServiceCall(httpClient, fetch_url, ServiceHandler.GET, null);
 			Log.d("Get Response: ", "> " + jsonStr);
 
 			return null;

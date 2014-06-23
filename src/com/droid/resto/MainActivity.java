@@ -16,20 +16,15 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.droid.resto.adapter.NavDrawerListAdapter;
-import com.droid.resto.fragment.HomeFragment;
-import com.droid.resto.fragment.MenuFragment;
-import com.droid.resto.fragment.OrderFragment;
-import com.droid.resto.fragment.TransFragment;
+import com.droid.resto.api.FetchTask;
+import com.droid.resto.fragment.*;
 import com.droid.resto.model.NavDrawerItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-
-public class MainActivity extends FragmentActivity implements
-	MenuFragment.TaskCallbacks,
-	OrderFragment.TaskCallbacks,
-	TransFragment.TaskCallbacks {
+//TODO: This is disgusting. Move taskcallbacks to external class, inherit from there.
+public class MainActivity extends FragmentActivity implements FetchTask.TaskCallbacks {
 
 	private static final boolean DEBUG = true;
 	private static final String TAG = MainActivity.class.getSimpleName();
@@ -66,6 +61,7 @@ public class MainActivity extends FragmentActivity implements
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[1], navMenuIcons.getResourceId(1, -1)));
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[2], navMenuIcons.getResourceId(2, -1), true, "10"));
 		navDrawerItems.add(new NavDrawerItem(navMenuTitles[3], navMenuIcons.getResourceId(3, -1), true, "22"));
+		navDrawerItems.add(new NavDrawerItem(navMenuTitles[4], navMenuIcons.getResourceId(4, -1)));
 
 		// Recycle the typed array
 		navMenuIcons.recycle();
@@ -128,6 +124,9 @@ public class MainActivity extends FragmentActivity implements
 		// if nav drawer is opened, hide the action items
 		boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
 		menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+		menu.findItem(R.id.action_refresh).setVisible(!drawerOpen);
+		menu.findItem(R.id.action_add_order).setVisible(!drawerOpen);
+
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -146,6 +145,8 @@ public class MainActivity extends FragmentActivity implements
 			case 3:
 				fragment = new TransFragment();
 				break;
+			case 4:
+				fragment = new AddOrderFragment();
 			default:
 				break;
 		}
@@ -189,24 +190,9 @@ public class MainActivity extends FragmentActivity implements
 		mDrawerToggle.onConfigurationChanged(newConfig);
 	}
 
-	/**
-	 * *****************************
-	 */
-
-	@Override
-	public void onPreExecute() {
-		if (DEBUG) Log.i(TAG, "onPreExecute()");
-		// Showing progress dialog
-		pDialog = new ProgressDialog(MainActivity.this);
-		pDialog.setMessage("Please wait...");
-		pDialog.setCancelable(false);
-		pDialog.show();
-	}
-
-
 	/*********************************/
 	/**
-	 * ** MENU CALLBACK METHODS ****
+	 * ** FETCHTASK CALLBACK METHODS ****
 	 */
 
 	@Override
@@ -225,6 +211,15 @@ public class MainActivity extends FragmentActivity implements
 		if (pDialog.isShowing()) pDialog.dismiss();
 	}
 
+	@Override
+	public void onPreExecute() {
+		if (DEBUG) Log.i(TAG, "onPreExecute()");
+		// Showing progress dialog
+		pDialog = new ProgressDialog(MainActivity.this);
+		pDialog.setMessage("Please wait...");
+		pDialog.setCancelable(false);
+		pDialog.show();
+	}
 
 	private class SlideMenuClickListener implements ListView.OnItemClickListener {
 		@Override
