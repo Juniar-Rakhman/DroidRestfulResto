@@ -38,7 +38,6 @@ public class MainActivity extends FragmentActivity implements FetchTask.TaskCall
 	private ArrayList<NavDrawerItem> navDrawerItems;
 	private NavDrawerListAdapter adapter;
 	private ProgressDialog pDialog;
-	private ArrayList<HashMap<String, String>> foodList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +174,6 @@ public class MainActivity extends FragmentActivity implements FetchTask.TaskCall
 	 * When using the ActionBarDrawerToggle, you must call it during
 	 * onPostCreate() and onConfigurationChanged()...
 	 */
-
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
@@ -192,7 +190,7 @@ public class MainActivity extends FragmentActivity implements FetchTask.TaskCall
 
 	/*********************************/
 	/**
-	 * ** FETCHTASK CALLBACK METHODS ****
+	 * ** FETCH TASK CALLBACK METHODS ****
 	 */
 
 	@Override
