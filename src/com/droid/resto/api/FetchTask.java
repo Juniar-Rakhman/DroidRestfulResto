@@ -18,7 +18,7 @@ public class FetchTask extends AsyncTask<Void, Integer, Void> {
 
     protected static final String TAG = MenuFragment.class.getSimpleName();
     protected static final boolean DEBUG = true; // Set this to false to disable logs.
-    protected static final String main_url = "http://localhost:8080/restfulresto";
+    protected static final String main_url = "http://restfulresto.cloudcontrolled.com";  //set webservice url here (do not use https)
 
     protected String fetch_url;
     protected DefaultHttpClient httpClient;
